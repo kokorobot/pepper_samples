@@ -7,6 +7,11 @@ try {
     session = s;
     // now that we are connected, we can use the buttons on the page
     $('button').prop('disabled', false);
+    s.service('ALMemory').then(function (memory) {
+      memory.subscriber('TouchChanged').then(function (subscriber) {
+        subscriber.signal.connect(changeTitle);
+      });
+    });
   });
 } catch (err) {
   console.log("Error when initializing QiSession: " + err.message);
@@ -16,6 +21,10 @@ try {
 $(function () {
   $('#say').click(sayHelloWorld);
 });
+
+function changeTitle(data) {
+  $('h1').text('Message received!')
+}
 
 function sayHelloWorld() {
   session.service('ALTextToSpeech').then(function (tts) {
